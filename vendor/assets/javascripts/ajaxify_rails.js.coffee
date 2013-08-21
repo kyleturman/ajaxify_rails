@@ -9,6 +9,7 @@ ignore_hash_change = null
 load_page_from_hash = null
 
 scroll_to_top = true
+loading_div = false
 
 initial_history_state =
   url: window.location.href
@@ -40,6 +41,7 @@ init = (options = {}) ->
   content_container = options.content_container if 'content_container' of options
   correct_url() unless $('meta[name="ajaxify:dont_correct_url"]').length > 0
   scroll_to_top = options.scroll_to_top if 'scroll_to_top' of options
+  loading_div = options.loading_div if 'loading_div' of options
   rails_ujs_fix()
 
 
@@ -132,7 +134,8 @@ load = (options, pop_state = false) ->
       type: type
       cache: true
       beforeSend: (xhr) ->
-        $("##{content_container}").html( "<div class='ajaxify_loader'></div>" )
+        options.loading_div = loading_div unless 'loading_div' of options
+        $("##{content_container}").html( "<div class='ajaxify_loader'></div>" ) if options.loading_div
         options.scroll_to_top = scroll_to_top unless 'scroll_to_top' of options
         scroll_page_to_top() if options.scroll_to_top
 
